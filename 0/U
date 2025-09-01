@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    walls
+    {
+        type            noSlip;
+    }
+    door
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+    vent
+    {
+        type            fixedValue;
+        value           uniform (0 0 0.6944); // 100CMH through 0.2m x 0.2m (100/3600)/(0.2*0.2) = 0.6944 m/s
+    }
+    room
+    {
+        type            noSlip;
+    }
+    suction
+    {
+        type                flowRateOutletVelocity;
+        volumetricFlowRate  constant 0.0111;  // m^3/s (example)
+        value               uniform (0 0 0);
+    }
+    /*toilet
+    {
+        type            noSlip;
+    }*/
+    /*human
+    {
+        type            noSlip;
+    }
+    floor
+    {
+        type            noSlip;
+    }
+    symmCut
+    {
+        type            symmetryPlane;
+    }*/
+}
+
+
+// ************************************************************************* //

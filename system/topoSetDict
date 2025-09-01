@@ -1,0 +1,100 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      topoSetDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+actions
+(
+    {
+        name    wallFaces;
+        type    faceSet;
+        action  new;
+        source  patchToFace;          // faces that belong to a patch
+        sourceInfo
+        {
+            patches ( room );       // ← current wall-patch name
+        }
+    }
+
+    // Vent
+    {
+        name        ventFaces;
+        type        faceSet;
+        action      new;
+        source      boxToFace;
+        sourceInfo
+        {
+            // 0.3 × 0.3 vent on ceiling corner
+            box (1.722 0.166 2.24999) (1.922 0.366 2.7);
+        }
+    }
+
+    // Door
+    {
+        name        doorFaces;
+        type        faceSet;
+        action      new;
+        source      boxToFace;
+        sourceInfo
+        {
+            // Door on x=0 wall
+            box (0.0248 -1 0.05) (0.765 0.0001 2.15);
+        }
+    }
+    {
+        name    pooCells;
+        type    cellSet;
+        action  new;
+        source  boxToCell;
+        sourceInfo
+        {
+            box (0.2 0.85 0.245) (0.5 1.25 0.255);
+        }
+    }
+    // Suction
+    // 1) faces inside your box
+    {
+        name        suctionBox;
+        type        faceSet;
+        action      new;
+        source      boxToFace;
+        sourceInfo
+        {
+            box (0.2 0.85 0.385) (0.5 1.25 0.395);
+        }
+    }
+    // 2) start from wall faces (your 'room' patch)
+    {
+        name    wallInSuction;
+        type    faceSet;
+        action  new;
+        source  faceToFace;
+        sourceInfo
+        {
+            set wallFaces;   // copy your existing wallFaces
+        }
+    }
+    // 3) intersect: keep only faces that are also inside the box
+    {
+        name    wallInSuction;
+        type    faceSet;
+        action  subset;      // ← intersection (A := A ∩ source)
+        source  faceToFace;
+        sourceInfo
+        {
+            set suctionBox;
+        }
+    }
+
+);

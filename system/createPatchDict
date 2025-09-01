@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      createPatchDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pointSync false;        // keep mesh topo consistent
+
+patches
+(
+    {
+        name        vent;          // ceiling vent
+        patchInfo
+        {
+            type patch;
+        }
+        constructFrom set;
+        set ventFaces;
+    }
+    {
+        name        door;         // door
+        patchInfo
+        {
+            type patch;
+        }
+        constructFrom set;
+        set doorFaces;
+    }
+    {
+        name        suction;
+        patchInfo { type patch; }
+        constructFrom set;
+        set wallInSuction;
+}
+);
+// ************************************************************************* //
